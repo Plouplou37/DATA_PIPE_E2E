@@ -37,12 +37,37 @@ def format_data(res):
 
 def stream_data(**kwargs):
     import json
+    from kafka import KafkaProducer
+    import time
+    import logging
 
     ti = kwargs['ti']
     print(ti)
-    res = get_data()
-    res = format_data(res)
-    print(json.dumps(res, indent=3))
+
+    # Publish record to the kafka cluster
+    producer = KafkaProducer(boostrap_servers=['broker:29092'],
+                             max_block_ms=5000)
+
+    curr_time = time.time()
+
+    while True:
+        if time.time() > curr_time + 60:
+            break
+        try:
+            logging.info(f"Call API")
+            res = get_data()
+            logging.info(f"Format data")
+            res = format_data(res)
+
+            logging.info(
+                f"Send the following data {json.dumps(res, indent=3)}")
+            # pushing data to the queu. Mechanism here is message-queu for streaming data.
+            producer.send(topic='user_created',
+                          value=json.dumps(res).encode('utf-8'))
+            logging.info("The data has been send.")
+        except Exception as e:
+            logging.error(f"An error occured: {e}")
+            continue
 
 
 default_args = {
@@ -50,7 +75,7 @@ default_args = {
     'start_date': datetime(2024, 4, 20, 10, 00),
 }
 
-with DAG(dag_id='KAFKA_STREAM',
+with DAG(dag_id='USER_AUTOMATION',
          default_args=default_args,
          schedule_interval='@daily',
          catchup=False,
