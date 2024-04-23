@@ -14,6 +14,6 @@ This repository is to implemented and develop a end-to-end data pipeline as show
 - pip install cassandra-driver to communicate with cassandra
 - pip install spark pyspark (kind of a middleware between kafka cluster and cassandra database)
 
-spark-submit --master spark://localhost:7077 spark_streams.py
+spark-submit --master spark://localhost:7077 spark_streams.py --> need to run before triger dag because we need a worker to listen to the streaming data.
 
 Note: The purpose of the docker-compose.yml is to define the whole architecture using micro-services !
