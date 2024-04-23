@@ -1,6 +1,6 @@
 This repository is to implemented and develop a end-to-end data pipeline as shown below:
 
-![System_Architecture]("image/Data engineering architecture.png")
+![System_Architecture](image/Data_engineering_architecture.png)
 
 - git init
 - ...
